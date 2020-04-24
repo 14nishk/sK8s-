@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: server-deployment
+  component: server
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: server-deployment
+      component: server
+  template:
+    metadata:
+      labels:
+        app: server-deployment
+        component: server
+    spec:
+      containers:
+      - name: server-deployment
+        image: stephengrider/multi-server
+        env:
+          - name: REDIS_HOST
+            value: redis-cluster-ip-service
+          - name: REDIS_PORT
+            value: '6379'
+          - name: PGUSER
+            value: postgres
+          - name: PGHOST
+            value: postgres-cluster-ip
+          - name: PGPORT
+            value: '5432'
+          - name: PGDATABASE
+            value: postgres 
+          - name: POSTGRES_PASSWORD  
+            valueFrom:
+                secretKeyRef:
+                  name: pgpassword 
+                  key: PGPASSWORD
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 5000

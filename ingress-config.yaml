@@ -1,0 +1,17 @@
+apiVersion: extension/beta1
+kind: Ingress
+metadata:
+  name: Ingress-service
+  annotations:
+    kubenetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/rewrite-target: / 
+spec:
+  rules:  
+   - path: / ? (. *) 
+      backend:
+        serviceName: client-cluster-ip-service
+        servicePort: 3000
+    - path: /api/ ? (. *) 
+      backend:
+        serviceName: server-cluster-ip-service
+         servicePort: 5000 
